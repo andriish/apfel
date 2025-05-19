@@ -29,6 +29,29 @@ jobs:
           cmake --install BUILD
           ctest --output-on-failure --test-dir BUILD -j 2
 
+  compilejobSUSE:
+    name: APFEL_on_SUSE
+    runs-on: ubuntu-latest
+    container:
+        image: opensuse/tumbleweed:latest
+    env:
+      CFLAGS: -fsanitize=address
+      CXXFLAGS: -fsanitize=address
+      FFLAGS: -fsanitize=address
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install 
+      run: |
+           zypper --gpg-auto-import-keys --non-interactive addrepo https://download.opensuse.org/repositories/science/openSUSE_Tumbleweed/science.repo
+           zypper --gpg-auto-import-keys --non-interactive refresh      
+           zypper --gpg-auto-import-keys  --non-interactive install gcc gcc-c++ gcc-fortran libasan8 make wget which cmake libLHAPDF LHAPDF-devel swig python3-devel
+    - name: Compile
+      run: |
+          cmake -S . -B BUILD -DCMAKE_INSTALL_PREFIX=$(pwd)/../INSTALL -DAPFEL_DOWNLOAD_PDFS=OFF
+          cmake --build BUILD -j
+          cmake --install BUILD
+          ctest --output-on-failure --test-dir BUILD -j 2
 
   compilejobOSX:
     runs-on: macos-latest
