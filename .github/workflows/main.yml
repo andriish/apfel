@@ -29,7 +29,7 @@ jobs:
           cmake --install BUILD
           ctest --output-on-failure --test-dir BUILD -j 2
 
-compilejobSUSE:
+  compilejobSUSE:
     name: APFEL_on_SUSE
     runs-on: ubuntu-latest
     container:
